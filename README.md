@@ -40,7 +40,7 @@
     </tr>
 </table>
 
-## Tech Stack
+## ⚙️ Tech Stack
 
 **Client:** React ver.18, BootStrap
 
@@ -48,12 +48,9 @@
 
 **Database:** MariaDB
 
-## Archetecture
+## 🧱 Archetecture & Development Environment
 
 ![archtecture](https://github.com/user-attachments/assets/078cf467-689d-4ff3-88c6-faa1caf5f24f)
-
-## Development Environment
-
 
 `IDE` Intellij, STS4
 
@@ -61,7 +58,7 @@
 
 `OS` mac, window
 
-## 해결한 문제
+## 🔥 해결한 문제
 ### 1. 레시피 API 79% 성능 개선 (LCP 3.3s -> 0.68s)
 #### 문제인식
 - API 성능 테스트 중 레시피 조회 API가 LCP 기준 3.3s가 걸리는 것을 파악
@@ -82,6 +79,8 @@
 ##### **그 결과 LCP 기준 3.3s에서 0.68s로 약 79% 성능 개선**
 
 ---
+<br>
+<br>
 
 # 프로젝트 상세 설명
 ## 유저저니맵
