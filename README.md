@@ -1,4 +1,4 @@
-
+# 프로젝트 개요 및 기여한 점
 # 🧊 Naengtureat
 **하마터면 버릴뻔했다! 이렇게 근사한 한끼!**
 
@@ -81,7 +81,9 @@
 #### 해결
 ##### **그 결과 LCP 기준 3.3s에서 0.68s로 약 79% 성능 개선**
 
+---
 
+# 프로젝트 상세 설명
 ## 유저저니맵
 <img width="500" alt="image" src="https://github.com/user-attachments/assets/42fb63a4-22a9-4ccd-94ee-f855ee5d50d9" />
 
