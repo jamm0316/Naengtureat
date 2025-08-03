@@ -63,6 +63,9 @@
 #### 문제인식
 - API 성능 테스트 중 레시피 조회 API가 LCP 기준 3.3s가 걸리는 것을 파악
 - [구글 마케팅 플랫폼 리서치](https://support.google.com/adsense/answer/7450973?hl=ko) 자료에 따르면 로딩 시간이 3초 이상이면 사용자 이탈률이 53%로 증가한다는 연구 결과 참조
+- [Google Web Core Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals?hl=ko)에 의하면 LCP 2.5s 이상이면 개선 필요 등급.
+  <img width="300" alt="image" src="https://github.com/user-attachments/assets/18783dfa-d13d-4eb1-81b5-2fb2f9d8cf24" />
+  
 
 #### 진단
 - 해당 코드를 살펴보고 findAll() 전략을 이용하여 엔티티의 모든 필드를 불러오는 점을 확인.
@@ -77,7 +80,9 @@
 
 
 #### 성과
-**🌱 성능 개선: 그 결과 LCP 기준 3.3s에서 0.68s로 약 79% 성능 개선**
+**🌱 성능 개선: 그 결과 LCP 기준 3.3s에서 0.68s로 약 79% 성능 개선** <br>
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/1e4357e7-db53-47dd-b590-87f586d749b9" />
+
 
 ---
 <br>
