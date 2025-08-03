@@ -61,10 +61,15 @@
 ## 🔥 해결한 문제
 ### 1. 레시피 API 79% 성능 개선 (LCP 3.3s -> 0.68s)
 #### 문제인식
-- API 성능 테스트 중 레시피 조회 API가 LCP 기준 3.3s가 걸리는 것을 파악
-- [구글 마케팅 플랫폼 리서치](https://support.google.com/adsense/answer/7450973?hl=ko) 자료에 따르면 로딩 시간이 3초 이상이면 사용자 이탈률이 53%로 증가한다는 연구 결과 참조
-- [Google Web Core Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals?hl=ko)에 의하면 LCP 2.5s 이상이면 개선 필요 등급.
+- API 성능 테스트 중 레시피 조회 API가 LCP 기준 3.3s가 걸리는 것을 파악<br>
   <img width="300" alt="image" src="https://github.com/user-attachments/assets/18783dfa-d13d-4eb1-81b5-2fb2f9d8cf24" />
+- [구글 마케팅 플랫폼 리서치](https://support.google.com/adsense/answer/7450973?hl=ko) 자료에 따르면 로딩 시간이 3초 이상이면 사용자 이탈률이 53%로 증가한다는 연구 결과 참조
+  <img width="737" height="221" alt="image" src="https://github.com/user-attachments/assets/6e2a6bb6-b9e1-44a8-b1fa-d8dd544b575e" />
+
+- [Google Web Core Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals?hl=ko)에 의하면 LCP 2.5s 이상이면 개선 필요 등급. <br>
+  <img width="1022" height="196" alt="image" src="https://github.com/user-attachments/assets/bc5e26cf-947a-495f-8a33-7173612325a9" />
+
+
   
 
 #### 진단
