@@ -61,33 +61,57 @@
 ## 🔥 해결한 문제
 ### 1. 레시피 API 79% 성능 개선 (LCP 3.3s -> 0.68s)
 #### 문제인식
-- API 성능 테스트 중 레시피 조회 API가 LCP 기준 3.3s가 걸리는 것을 파악<br>
+- 조회 API가 LCP 기준 3.3초가 소요, 따라서 로딩 시간이 사용자 경험에 미치는 영향을 분석<br>
   <img width="300" alt="image" src="https://github.com/user-attachments/assets/18783dfa-d13d-4eb1-81b5-2fb2f9d8cf24" />
-- [구글 마케팅 플랫폼 리서치](https://support.google.com/adsense/answer/7450973?hl=ko) 자료에 따르면 로딩 시간이 3초 이상이면 사용자 이탈률이 53%로 증가한다는 연구 결과 참조
+  
+- 로딩 시간이 3초 이상이면 사용자 이탈률이 53%로 증가 ([🔗 구글 마케팅 플랫폼 리서치](https://support.google.com/adsense/answer/7450973?hl=ko))
   <img width="737" height="221" alt="image" src="https://github.com/user-attachments/assets/6e2a6bb6-b9e1-44a8-b1fa-d8dd544b575e" />
 
-- [Google Web Core Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals?hl=ko)에 의하면 LCP 2.5s 이상이면 개선 필요 등급. <br>
+- LCP 2.5초 이상이면 개선 필요 등급 ([🔗 Google Web Core Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals?hl=ko)) <br>
   <img width="1022" height="196" alt="image" src="https://github.com/user-attachments/assets/bc5e26cf-947a-495f-8a33-7173612325a9" />
 
 
   
 
 #### 진단
-- 해당 코드를 살펴보고 findAll() 전략을 이용하여 엔티티의 모든 필드를 불러오는 점을 확인.
-- 이 때, Recipe 테이블은 8개의 테이블과 연결되어 있었고, "상세 레시피 과정" 데이터는 약 1000건의 고화질 이미지와 1000건의 대용량 텍스트를 포함.
-- Recipe와 연관관계를 맺고있는 필드들은 모두 LAZY 전략을 채택 중이였으나, DTO에서 모든 정보를 매핑하도록 설정.
-- 이에 따라 N+1문제와 EAGER 전략처럼 모든 필드값들이 한번에 로딩되는 현상이 일어나며, 대용량 데이터를 불러오면서 성능 저하 문제 발생.
+1. 원인 분석 결과 findAll() 사용으로 인해 모든 엔티티 필드 일괄 조회
+2. 8개 테이블과 연관 관계, 트랜잭션 당 약 2,000건 이미지·텍스트 포함 대용량 데이터 조회
+3. JPA는 연관관계를 LAZY로 설정했음에도 불구하고, DTO에서 모든 연관 필드 접근
+4. JPA의 프록시 객체가 getter 호출 시 즉시 쿼리 실행되는 동작 원리로 인해, 
+      의도치 않은 대량 쿼리 실행 및 성능 병목 발생
 
 #### 판단 및 해결
-1. **N+1 문제 해결**: fetch join을 이용해 필요한 필드만 불러오도록 개선.<br>
-2. **데이터 셋 줄이기**: LAZY 전략을 유지하며, DTO 구조를 테이블 전체 필드를 가져오는 구조에서 필요한 데이터만 가져오는 구조로 개선.<br>
-3. **가독성 및 유지보수성 확보**: 과도한 테이블 join으로 가독성과 유지보수성이 떨어져, 역할별로 조회 메서드를 나눈 후 비즈니스 로직에서 DTO에 매핑하는 구조로 개선.<br>
+1. **[쿼리 튜닝](https://github.com/jamm0316/Naengtureat/blob/develop/backend/src/main/java/com/shinhan/naengtureat/recipe/model/RecipeRepository.java)**: fetch join을 활용해 필요한 필드만 명시적으로 조회, N+1 문제 해소
+2. **데이터셋(data-set) 경량화**: LAZY 전략 유지, DTO에 필요한 필드만 선별 추출
+3. **조회 책임 분리**: 과도한 join 구조로 인한 가독성·유지보수성 저하
+      → 역할별 조회 메서드 분리, 서비스 로직에서 DTO 매핑 분리 설계
 
 
 #### 성과
 **🌱 성능 개선: 그 결과 LCP 기준 3.3s에서 0.68s로 약 79% 성능 개선** <br>
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/1e4357e7-db53-47dd-b590-87f586d749b9" />
 
+---
+
+### 2. Git Flow 및 Convention 수립으로 충돌 최소화
+> 📄 프로젝트 상세 문서는 [📗 Git Flow 및 Convention 문서 바로가기](https://jamm0316.notion.site/Git-1d8cda6b86ff81f1a29ed391055afc1f) 에서 확인할 수 있습니다.
+
+#### 개요
+- 기존 팀원들의 git 경험이 적은 사황에서 형상관리 혼란을 줄이고자, Git Flow 전략과 Commit Convention을 수립하고 문서화해 공유
+
+#### 목적
+1. 이슈와 브랜치, 커밋 메시지 간 연계와 작업 추적 용이
+2. 충돌 방지 전략을 통해 merge 충돌 최소화
+3. Git 사용법에 대한 경험치 격차 최소화
+
+#### 판단 및 해결
+1. main → develop → feat/realease/fix 구조의 Git Flow 전략도입
+2. 커밋 메시지 컨벤션을 type별로 정리해 공유
+3. [PR 템플릿](https://github.com/jamm0316/Naengtureat/blob/develop/.github/PULL_REQUEST_TEMPLATE.md), 브랜치 네이밍, [이슈 템플릿](https://github.com/jamm0316/Naengtureat/blob/develop/.github/ISSUE_TEMPLATE/-feat--%EC%9D%B4%EC%8A%88-%ED%85%9C%ED%94%8C%EB%A6%BF.md)도 문서화해 고융
+
+#### 성과
+1. 모든 이슈와 브랜치, 커밋이 일관된 형식으로 연결되어 코드리뷰와 QA가 쉬워짐
+2. 팀원 모두가 Git을 효율적으로 사용할 수 있는 기반이 마련되어 개발 집중도 높아짐
 
 ---
 <br>
