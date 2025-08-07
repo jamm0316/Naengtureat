@@ -59,37 +59,33 @@
 `OS` mac, window
 
 ## 🔥 해결한 문제
-### 1. 레시피 API 79% 성능 개선 (LCP 3.3s -> 0.68s)
+### 1. 레시피 API 87% 성능 개선 (Postman 테스트 기준 5.37s -> 0.66s)
 #### 문제인식
-- 조회 API가 LCP 기준 3.3초가 소요, 따라서 로딩 시간이 사용자 경험에 미치는 영향을 분석<br>
-  <img width="300" alt="image" src="https://github.com/user-attachments/assets/18783dfa-d13d-4eb1-81b5-2fb2f9d8cf24" />
+- 조회 API가 Postman 테스트 기준 5.37초가 소요, 따라서 로딩 시간이 사용자 경험에 미치는 영향을 분석<br>
+  <img width="300" alt="image" src="https://github.com/user-attachments/assets/2c62d3a3-2903-4503-aefd-fdb8ecd97704" />
   
 - 로딩 시간이 3초 이상이면 사용자 이탈률이 53%로 증가 ([🔗 구글 마케팅 플랫폼 리서치](https://support.google.com/adsense/answer/7450973?hl=ko))
   <img width="737" height="221" alt="image" src="https://github.com/user-attachments/assets/6e2a6bb6-b9e1-44a8-b1fa-d8dd544b575e" />
 
-- LCP 2.5초 이상이면 개선 필요 등급 ([🔗 Google Web Core Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals?hl=ko)) <br>
-  <img width="1022" height="196" alt="image" src="https://github.com/user-attachments/assets/bc5e26cf-947a-495f-8a33-7173612325a9" />
-
-
-  
-
 #### 진단
-1. 원인 분석 결과 findAll() 사용으로 인해 모든 엔티티 필드 일괄 조회
-2. 8개 테이블과 연관 관계, 트랜잭션 당 약 2,000건 이미지·텍스트 포함 대용량 데이터 조회
-3. JPA는 연관관계를 LAZY로 설정했음에도 불구하고, DTO에서 모든 연관 필드 접근
+1. `findAll()` 사용으로 인해 **모든 엔티티 필드 일괄 조회**
+2. 8개 테이블과 연관 관계 + 트랜잭션 당 약 **1,500건 이미지·텍스트 포함**
+3. **LAZY 전략에도 불구하고**, DTO에서 모든 연관 필드 접근
 4. JPA의 프록시 객체가 getter 호출 시 즉시 쿼리 실행되는 동작 원리로 인해, 
-      의도치 않은 대량 쿼리 실행 및 성능 병목 발생
+      의도치 않은 대량 쿼리 실행 및 **성능 병목 발생**
 
 #### 판단 및 해결
-1. **[쿼리 튜닝](https://github.com/jamm0316/Naengtureat/blob/develop/backend/src/main/java/com/shinhan/naengtureat/recipe/model/RecipeRepository.java)**: fetch join을 활용해 필요한 필드만 명시적으로 조회, N+1 문제 해소
-2. **데이터셋(data-set) 경량화**: LAZY 전략 유지, DTO에 필요한 필드만 선별 추출
-3. **조회 책임 분리**: 과도한 join 구조로 인한 가독성·유지보수성 저하
-      → 역할별 조회 메서드 분리, 서비스 로직에서 DTO 매핑 분리 설계
+1. **[쿼리 튜닝](https://github.com/jamm0316/Naengtureat/blob/develop/backend/src/main/java/com/shinhan/naengtureat/recipe/model/RecipeRepository.java)**: fetch join으로 필요한 필드만 명시적 조회 → **N+1 문제 해결**
+2. **데이터셋(data-set) 경량화**: LAZY 전략 유지, DTO에 필요한 필드만 **선별 매핑**
+3. **조회 책임 분리**: 과도한 join 구조 → 가독성·유지보수성 저하
+      → **역할별 조회 메서드 분리, 서비스 로직에서 DTO 매핑 분리 설계**
 
 
 #### 성과
-**🌱 성능 개선: 그 결과 LCP 기준 3.3s에서 0.68s로 약 79% 성능 개선** <br>
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/1e4357e7-db53-47dd-b590-87f586d749b9" />
+**🌱 성능 개선: Postman 기준 5.37초 → 0.66초로 약 87% 로딩 속도 개선** <br>
+**🧑🏻‍💻 코드 구조 개선: 책임 분리 기반의 구조 리펙토링으로 유지보수성 확보** <br>
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/64ce8c92-57ce-41a6-886f-600e087c5343" />
+
 
 ---
 
